@@ -1,0 +1,67 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+        - ./mysqldata/conf:/etc/mysql:rw 
+        - ./mysqldata/data:/var/lib/mysql:rw 
+        - ./mysqldata/log:/var/log/mysql:rw 
+     restart: always
+     #若无需docker外访问，可注释掉
+     ports:
+        - "3306:3306"
+     expose:
+        - "3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: rtxxpp
+       MYSQL_DATABASE: crmeb
+       MYSQL_USER: crmeb
+       MYSQL_PASSWORD: crmeb_pass
+
+   redis:
+     image: redis
+     volumes:
+        - ./redisdata/redis.conf:/etc/redis/redis.conf
+        - ./redisdata/data:/data
+          #ports:
+          #- "6379:6379"
+     expose:
+        - "6379"
+     command: [ "/usr/local/bin/redis-server","/etc/redis/redis.conf","--appendonly","yes"]
+
+   crmeb:
+     depends_on:
+       - db
+       - redis
+     build:
+       context: ./crmeb
+       dockerfile: Dockerfile
+       args:
+         buildno: 1
+     ports:
+       - "8324:8324"
+     restart: always
+     links:
+       - "db:database"
+       - "redis:redis_host"
+     #目前没有用过，配置文件放出来了
+     environment:
+       DB_HOST: db
+       DB_PORT: 3306
+       DB_USER: crmeb
+       DB_PASSWORD: crmeb
+       DB_NAME: crmeb
+       REDIS_HOST: redis
+       REDIS_PORT: 6379
+       REDIS_PASS: ''
+     volumes:
+       - ./crmeb:/var/www/crmeb:rw #
+       - ./php_crmeb/conf:/usr/local/etc/php:rw #
+       - ./php_crmeb/extensions:/usr/local/lib/php/extensions:rw #
+    
+
+volumes:
+    mshop: {}
+#- ./mysqldata/vdata:/var/lib/mysql:rw #mysql文件
+#- ./wpcode/vdata:/var/www/html:rw #
