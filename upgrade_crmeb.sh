@@ -1,17 +1,17 @@
 #!/bin/zsh
 
-CUR_DIR=$(pwd)
-CRMEB_VERSION=$1
+curdir=$(pwd)
+cversion=$1
 
-[[ $CRMEB_VERSION == ''  ]] && CRMEB_VERSION='v1.3.0'
+[[ $cversion == ''  ]] && cversion='v1.3.0'
 
 
-zipdir=$CUR_DIR/source_zip/
-zipfile=crmeb_merchant-${CRMEB_VERSION}.zip
+zipdir=$curdir/source_zip/
+zipfile=crmeb_merchant-${cversion}.zip
 
-[[ ! -f $zipdir/$zipfile  ]] && echo "$zipfile not exist." && exit
+[[ ! -f $zipdir/$zipfile  ]] && echo "$zipdir/$zipfile not exist." && exit
 
-unzipdir=$CUR_DIR/source_zip/$CRMEB_VERSION.crmeb
+unzipdir=$curdir/source_zip/$cversion.crmeb
 mkdir -p $unzipdir
 cd $unzipdir && unzip $zipdir/$zipfile
 
@@ -24,4 +24,8 @@ cd $cmdir && unzip compiled74.zip
 cp -rf $cmdir/basic $unzipdir/crmewb/
 cp -rf $cmdir/crmeb.php $unzipdir/config/
 
-echo "cp -d $unzipdir/* to $CUR_DIR/crmeb/ "
+bakupdir=$curdir/bakupdir/$(date +%Y%m%d%H%I%S).crmeb;
+mkdir -p $bakupdir
+rsync -avvz  $curdir/crmeb/* $bakupdir/
+mkdir -p $curdir/crmeb
+rsync -avv $unzipdir/*  $curdir/crmeb/
