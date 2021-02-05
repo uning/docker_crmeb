@@ -13,7 +13,7 @@ php_crmeb/ex*
 workspace.code-workspace
 .DS_Store
 crmeb/*
-bakup/*
+bakupdir/*
 
 .travis.yml
 .version
