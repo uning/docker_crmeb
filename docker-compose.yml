@@ -9,8 +9,8 @@ services:
         - ./mysqldata/log:/var/log/mysql:rw 
      restart: always
      #若无需docker外访问，可注释掉
-     ports:
-        - "3306:3306"
+     #ports:
+     #   - "3306:3306"
      expose:
         - "3306"
      environment:
