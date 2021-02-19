@@ -42,4 +42,4 @@ mkdir -p $curdir/crmeb
 
 rsync -avv $unzipdir/*  $curdir/crmeb/
 cp $unzipdir/.version $curdir/crmeb/
-
+cp $curdir/crmeb/mysite.ico $curdir/crmeb/public/favicon.ico
